@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
 import base64
 import datetime
@@ -14,8 +16,8 @@ from werkzeug.wrappers import Response
 # This file may be copied into a project's root,
 # so handle both scenarios.
 try:
-    from zappa.wsgi import create_wsgi_request, common_log
-    from zappa.middleware import ZappaWSGIMiddleware
+    from .zappa.wsgi import create_wsgi_request, common_log
+    from .zappa.middleware import ZappaWSGIMiddleware
 except ImportError as e: # pragma: no cover
     from .wsgi import create_wsgi_request, common_log
     from .middleware import ZappaWSGIMiddleware

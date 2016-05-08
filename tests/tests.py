@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from __future__ import print_function
 import base64
 import collections
 import json
@@ -197,7 +198,7 @@ class TestZappa(unittest.TestCase):
         z = Zappa()
         import os
         path = os.getcwd()
-        print path
+        print(path)
         z.schedule_events(path=path)
 
     ##

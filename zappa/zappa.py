@@ -1,3 +1,4 @@
+from __future__ import print_function
 import base64
 import boto3
 import botocore
@@ -860,8 +861,8 @@ class Zappa(object):
                 skip_roots.append(root)
                 continue
 
-            print root
-            print filenames
+            print(root)
+            print(filenames)
 
             breakout = False
             for skip in skip_roots:

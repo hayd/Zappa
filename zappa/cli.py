@@ -8,6 +8,8 @@ Deploy arbitrary Python programs as serverless Zappa applications.
 """
 
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
 import argparse
 import datetime
@@ -23,7 +25,7 @@ import tempfile
 import unicodedata
 import zipfile
 
-from zappa import Zappa
+from .zappa import Zappa
 
 CUSTOM_SETTINGS = [
     'aws_region',
@@ -354,7 +356,7 @@ class ZappaCLI(object):
 
         # ..and configure it
         for setting in CUSTOM_SETTINGS:
-            if self.zappa_settings[self.api_stage].has_key(setting):
+            if setting in self.zappa_settings[self.api_stage]:
                 setattr(self.zappa, setting, self.zappa_settings[
                         self.api_stage][setting])        
 
@@ -392,7 +394,7 @@ class ZappaCLI(object):
 
             # Lambda requires a specific chmod
             temp_settings = tempfile.NamedTemporaryFile(delete=False)
-            os.chmod(temp_settings.name, 0644)
+            os.chmod(temp_settings.name, 0o644)
             temp_settings.write(settings_s)
             temp_settings.close()
             lambda_zip.write(temp_settings.name, 'zappa_settings.py')

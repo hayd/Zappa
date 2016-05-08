@@ -1,4 +1,5 @@
-import placebo
+from __future__ import absolute_import
+from . import placebo
 import boto3
 import os
 import functools
