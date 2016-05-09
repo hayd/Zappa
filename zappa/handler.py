@@ -9,8 +9,14 @@ import logging
 import os
 import traceback
 
-from urllib import urlencode
-from StringIO import StringIO
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
 from werkzeug.wrappers import Response
 
 # This file may be copied into a project's root,
@@ -153,7 +159,7 @@ class LambdaHandler(object):
             if debug:
                 # Return this unspecified exception as a 500.
                 content = "<!DOCTYPE html>500. From Zappa: <pre>" + str(e) + "</pre><br /><pre>" + traceback.format_exc().replace('\n', '<br />') + "</pre>"
-                exception = base64.b64encode(content)
+                exception = base64.b64encode(content.encode("utf-8")).decode("utf-8")
                 raise Exception(exception)
             else:
                 raise e

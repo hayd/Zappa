@@ -212,9 +212,7 @@ class TestWSGIMockMiddleWare(unittest.TestCase):
         self.assertNotEqual(''.join(resp), body)
 
     def test_wsgi_middleware_uglystring(self):
-        ugly_string = unicode("˝ÓÔÒÚÆ☃ЗИЙКЛМФХЦЧШ차를 타고 온 펲시맨(╯°□°）╯︵ ┻━┻)"
-                              "לֹהִים, אֵת הַשָּׁמַיִם, וְאֵת הָt͔̦h̞̲e̢̤ ͍̬̲͖f̴̘͕̣è͖ẹ̥̩l͖͔͚i͓͚̦͠n͖͍̗͓̳̮g͍ ̨ 𝕢𝕦𝕚𝕔𝕜 𝕓𝕣𝕠𝕨",
-                              encoding='utf8')
+        ugly_string = u"˝ÓÔÒÚÆ☃ЗИЙКЛМФХЦЧШ차를 타고 온 펲시맨(╯°□°）╯︵ ┻━┻)לֹהִים, אֵת הַשָּׁמַיִם, וְאֵת הָt͔̦h̞̲e̢̤ ͍̬̲͖f̴̘͕̣è͖ẹ̥̩l͖͔͚i͓͚̦͠n͖͍̗͓̳̮g͍ ̨ 𝕢𝕦𝕚𝕔𝕜 𝕓𝕣𝕠𝕨"
 
         # Pass some unicode through the middleware body
         def simple_app(environ, start_response):
@@ -334,7 +332,7 @@ class TestWSGIMiddleWare(unittest.TestCase):
         self.assertTrue(zappa_cookie1.startswith('zappa='))
         zdict = parse_cookie(zappa_cookie1)
         print('zdict', zdict)
-        zdict2 = json.loads(base58.b58decode(zdict['zappa']))
+        zdict2 = json.loads(base58.b58decode(zdict['zappa']).decode("utf-8"))
         print('zdict2', zdict2)
         self.assertEqual(len(zdict2), 3)
         self.assertEqual(zdict2['foo'], 'new_value')

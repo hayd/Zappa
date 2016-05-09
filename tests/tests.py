@@ -42,7 +42,7 @@ class TestZappa(unittest.TestCase):
         # mock the pip.get_installed_distributions() to include a package in lambda_packages so that the code
         # for zipping pre-compiled packages gets called
         mock_named_tuple = collections.namedtuple('mock_named_tuple', ['project_name'])
-        mock_return_val = [mock_named_tuple(lambda_packages.keys()[0])]  # choose name of 1st package in lambda_packages
+        mock_return_val = [mock_named_tuple(list(lambda_packages.keys())[0])]  # choose name of 1st package in lambda_packages
         with mock.patch('pip.get_installed_distributions', return_value=mock_return_val):
             z = Zappa()
             path = z.create_lambda_zip(handler_file=os.path.realpath(__file__))
@@ -237,11 +237,11 @@ class TestZappa(unittest.TestCase):
         for code in ['400', '401', '402', '403', '404', '500']:
             pattern = Zappa.selection_pattern(code)
 
-            document = base64.b64encode(head + code + random_string(50))
+            document = base64.b64encode((head + code + random_string(50)).encode('utf-8')).decode('utf-8')
             self.assertRegexpMatches(document, pattern)
 
             for bad_code in ['200', '301', '302']:
-                document = base64.b64encode(head + bad_code + random_string(50))
+                document = base64.b64encode((head + bad_code + random_string(50)).encode('utf-8')).decode('utf-8')
                 self.assertNotRegexpMatches(document, pattern)
 
     def test_200_pattern(self):

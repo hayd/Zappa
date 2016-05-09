@@ -557,7 +557,7 @@ class Zappa(object):
 
         # Does an API Gateway with this name exist already?
         apis = client.get_rest_apis()['items']
-        if not len(filter(lambda a: a['name'] == api_name, apis)):
+        if not any(a["name"] == api_name for a in apis):
             response = client.create_rest_api(
                 name=api_name,
                 description=api_name + " Zappa",
@@ -715,8 +715,8 @@ class Zappa(object):
         if status_code in ['301', '302']:
             pattern = 'https://.*|/.*'
         elif status_code != '200':
-            pattern = base64.b64encode("<!DOCTYPE html>" + str(status_code)) + '.*'
-            pattern = pattern.replace('+', r"\+")
+            pattern = base64.b64encode(("<!DOCTYPE html>" + str(status_code)).encode('utf-8')).decode('utf-8')
+            pattern = pattern.replace('+', r"\+") + '.*'
 
         return pattern
 
@@ -892,7 +892,7 @@ class Zappa(object):
             if os.getcwd() not in path:
                 continue
 
-            for name, val in value.__dict__.iteritems(): 
+            for name, val in value.__dict__.items():
                 if callable(val):
                     continue # XXX DO ZAPPA_WRAP_CHECK HERE!
 

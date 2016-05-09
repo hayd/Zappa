@@ -2,9 +2,16 @@ import logging
 import json
 
 import base64
-from urllib import urlencode
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from requestlogger import ApacheFormatter
-from StringIO import StringIO
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
 def create_wsgi_request(event_info, server_name='zappa', script_name=None,
@@ -81,9 +88,14 @@ def create_wsgi_request(event_info, server_name='zappa', script_name=None,
 
                 # Multipart forms are Base64 encoded through API Gateway
                 if 'multipart/form-data;' in event_info["headers"]['Content-Type']:
-                    body = base64.b64decode(body)
+                    body = base64.b64decode(body.encode("utf-8")).decode("utf-8")
 
-            environ['wsgi.input'] = StringIO(body)
+            try:
+                environ['wsgi.input'] = StringIO(body)
+            except:
+                # TODO add specifics, unicode rather than str required on py2??
+                environ['wsgi.input'] = StringIO(unicode(body))
+
 
             environ['CONTENT_LENGTH'] = str(len(body))
 

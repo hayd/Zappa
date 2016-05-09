@@ -1,5 +1,8 @@
 import base58
-import Cookie
+try:
+    import http.cookies as Cookie
+except ImportError:
+    import Cookie
 import json
 import time
 
@@ -132,12 +135,12 @@ class ZappaWSGIMiddleware(object):
 
         # JSON-ify the cookie and encode it.
         pack_s = json.dumps(self.request_cookies)
-        encoded = base58.b58encode(pack_s)
-        
+        encoded = base58.b58encode(pack_s.encode("utf-8"))
+
         # Set the result as the zappa cookie
         new_headers.append(
-            ('Set-Cookie', dump_cookie('zappa', 
-                        value=encoded, 
+            ('Set-Cookie', dump_cookie('zappa',
+                        value=encoded,
                         expires=expires)
             )
         )
@@ -161,7 +164,7 @@ class ZappaWSGIMiddleware(object):
 
         """
 
-        self.decoded_zappa = base58.b58decode(encoded_zappa)
+        self.decoded_zappa = base58.b58decode(encoded_zappa).decode("utf-8")
         self.request_cookies = json.loads(self.decoded_zappa)
         return
 
